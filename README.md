@@ -2,6 +2,8 @@
 
 A personal bucket-list PWA for travel, tech, lifestyle, and more — track why you want something, when to buy it, and how it helps you.
 
+**Source:** [github.com/tarunsinghofficial/desire-ledger](https://github.com/tarunsinghofficial/desire-ledger)
+
 ## Stack
 
 - Next.js + TypeScript + Tailwind
@@ -65,7 +67,7 @@ A public Vercel deploy typically sets `DEMO_OWNER_USER_IDS` to the owner's Clerk
 
 To run your own (sync + AI for you):
 
-1. Fork or clone this repo
+1. Fork or clone [tarunsinghofficial/desire-ledger](https://github.com/tarunsinghofficial/desire-ledger)
 2. Create your own Clerk, Supabase, and Groq/Gemini projects
 3. Copy `.env.example` → set your keys and `DEMO_OWNER_USER_IDS` to your Clerk user id
 4. Deploy to Vercel (or run locally)

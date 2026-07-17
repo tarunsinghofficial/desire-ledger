@@ -3,6 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { useCapabilities } from "@/lib/capabilities-client";
+import { REPO_URL } from "@/lib/demo-access";
 import { downloadJson, exportLedger, importLedger } from "@/lib/export";
 import { syncLedger } from "@/lib/sync";
 import type { LedgerExport } from "@/lib/types";
@@ -71,8 +72,16 @@ export default function SettingsPage() {
             </p>
             <p className="text-sm text-fir-muted">{caps.selfHostHint}</p>
             <p className="text-sm text-fir-muted">
-              To unlock sync and AI for yourself: clone the repo, add your own
-              Clerk, Supabase, and AI keys, set{" "}
+              To unlock sync and AI for yourself: clone{" "}
+              <a
+                href={REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-sulu/60 underline-offset-2 hover:text-deep-fir"
+              >
+                github.com/tarunsinghofficial/desire-ledger
+              </a>
+              , add your own Clerk, Supabase, and AI keys, set{" "}
               <code className="text-deep-fir">DEMO_OWNER_USER_IDS</code> to your
               Clerk user id, and deploy. See the README setup section.
             </p>

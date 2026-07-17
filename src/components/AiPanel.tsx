@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCapabilities } from "@/lib/capabilities-client";
+import { REPO_URL } from "@/lib/demo-access";
 import type { AiAction, Desire } from "@/lib/types";
 
 const ACTIONS: { id: AiAction; label: string; description: string }[] = [
@@ -120,8 +121,16 @@ export function AiPanel({
         </div>
         <p className="text-sm text-fir-muted">{caps.selfHostHint}</p>
         <p className="text-sm text-fir-muted">
-          Deploy your own instance (see Settings or the README) to use AI with
-          your keys.
+          Deploy your own instance from{" "}
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-sulu/60 underline-offset-2 hover:text-deep-fir"
+          >
+            github.com/tarunsinghofficial/desire-ledger
+          </a>{" "}
+          (see Settings) to use AI with your keys.
         </p>
       </aside>
     );

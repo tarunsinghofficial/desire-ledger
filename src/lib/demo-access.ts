@@ -1,5 +1,7 @@
 /** Clerk user ids allowed to use this deploy's cloud sync + AI. */
 
+export const REPO_URL = "https://github.com/tarunsinghofficial/desire-ledger";
+
 export const SELF_HOST_HINT =
   "Cloud sync and AI on this demo are limited to the owner. Deploy your own instance with your Clerk, Supabase, and AI keys to unlock them.";
 
