@@ -47,6 +47,29 @@ USE_GEMINI=false
 GROQ_API_KEY=...
 ```
 
+### Owner allowlist (`DEMO_OWNER_USER_IDS`)
+
+Cloud sync and AI on a given deploy are limited to Clerk user ids listed in `DEMO_OWNER_USER_IDS` (comma-separated). Empty means nobody can use sync/AI on that deploy.
+
+Find your id in the Clerk Dashboard → Users, then:
+
+```bash
+DEMO_OWNER_USER_IDS=user_xxxxxxxx
+```
+
+Everyone else can still sign up and use the app local-only (IndexedDB on their device), with file backup/export.
+
+## Public demo
+
+A public Vercel deploy typically sets `DEMO_OWNER_USER_IDS` to the owner's Clerk id so random signups do not write to the owner's Supabase or spend their AI credits.
+
+To run your own (sync + AI for you):
+
+1. Fork or clone this repo
+2. Create your own Clerk, Supabase, and Groq/Gemini projects
+3. Copy `.env.example` → set your keys and `DEMO_OWNER_USER_IDS` to your Clerk user id
+4. Deploy to Vercel (or run locally)
+
 ## Categories
 
 Travel & places · Tech & products · Lifestyle · Health & fitness · Learning · Home · Experiences · Other

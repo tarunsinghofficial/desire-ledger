@@ -2,16 +2,22 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useCallback, useEffect, useState } from "react";
+import { useCapabilities } from "@/lib/capabilities-client";
 import { syncLedger } from "@/lib/sync";
 
 export function SyncStatus() {
   const { user, isLoaded } = useUser();
+  const { caps, loaded: capsLoaded } = useCapabilities();
   const [message, setMessage] = useState("Local");
   const [busy, setBusy] = useState(false);
 
   const runSync = useCallback(async () => {
     if (!user?.id) {
       setMessage("Local");
+      return;
+    }
+    if (!caps.cloudSync) {
+      setMessage("Local only");
       return;
     }
     setBusy(true);
@@ -21,10 +27,14 @@ export function SyncStatus() {
     } finally {
       setBusy(false);
     }
-  }, [user?.id]);
+  }, [user?.id, caps.cloudSync]);
 
   useEffect(() => {
-    if (!isLoaded || !user?.id) return;
+    if (!isLoaded || !capsLoaded) return;
+    if (!user?.id || !caps.cloudSync) {
+      setMessage(user?.id ? "Local only" : "Local");
+      return;
+    }
     const onOnline = () => {
       void runSync();
     };
@@ -40,15 +50,15 @@ export function SyncStatus() {
       window.clearTimeout(boot);
       window.clearInterval(id);
     };
-  }, [isLoaded, user?.id, runSync]);
+  }, [isLoaded, capsLoaded, user?.id, caps.cloudSync, runSync]);
 
   return (
     <button
       type="button"
       onClick={() => void runSync()}
-      disabled={busy || !user}
+      disabled={busy || !user || !caps.cloudSync}
       className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/80 hover:bg-white/15 disabled:opacity-60"
-      title="Sync now"
+      title={caps.cloudSync ? "Sync now" : "Local only on this demo"}
     >
       {busy ? "Syncing…" : message}
     </button>

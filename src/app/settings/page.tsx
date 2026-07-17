@@ -2,17 +2,19 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import { useCapabilities } from "@/lib/capabilities-client";
 import { downloadJson, exportLedger, importLedger } from "@/lib/export";
 import { syncLedger } from "@/lib/sync";
 import type { LedgerExport } from "@/lib/types";
 
 export default function SettingsPage() {
   const { user } = useUser();
+  const { caps, loaded: capsLoaded } = useCapabilities();
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function runSync() {
-    if (!user?.id) return;
+    if (!user?.id || !caps.cloudSync) return;
     setBusy(true);
     const result = await syncLedger(user.id);
     setStatus(result.message);
@@ -61,18 +63,36 @@ export default function SettingsPage() {
 
       <section className="panel space-y-4">
         <h2 className="text-xl font-semibold">Cloud sync</h2>
-        <p className="text-sm text-fir-muted">
-          Save your list to the cloud so you can open it on another phone or
-          laptop.
-        </p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          disabled={busy || !user}
-          onClick={() => void runSync()}
-        >
-          {busy ? "Syncing…" : "Sync now"}
-        </button>
+        {capsLoaded && !caps.cloudSync ? (
+          <>
+            <p className="text-sm text-fir-muted">
+              Your list stays on this device. Cloud sync and AI on this public
+              demo are limited to the owner.
+            </p>
+            <p className="text-sm text-fir-muted">{caps.selfHostHint}</p>
+            <p className="text-sm text-fir-muted">
+              To unlock sync and AI for yourself: clone the repo, add your own
+              Clerk, Supabase, and AI keys, set{" "}
+              <code className="text-deep-fir">DEMO_OWNER_USER_IDS</code> to your
+              Clerk user id, and deploy. See the README setup section.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-fir-muted">
+              Save your list to the cloud so you can open it on another phone or
+              laptop.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={busy || !user || !caps.cloudSync}
+              onClick={() => void runSync()}
+            >
+              {busy ? "Syncing…" : "Sync now"}
+            </button>
+          </>
+        )}
       </section>
 
       <section className="panel space-y-4">

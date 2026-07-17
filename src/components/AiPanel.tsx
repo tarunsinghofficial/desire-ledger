@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCapabilities } from "@/lib/capabilities-client";
 import type { AiAction, Desire } from "@/lib/types";
 
 const ACTIONS: { id: AiAction; label: string; description: string }[] = [
@@ -46,10 +47,12 @@ export function AiPanel({
     meta?: { prompt?: string; note?: string },
   ) => void;
 }) {
+  const { caps, loaded } = useCapabilities();
   const [busy, setBusy] = useState<AiAction | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function run(action: AiAction) {
+    if (!caps.ai) return;
     setBusy(action);
     setError(null);
     try {
@@ -108,6 +111,22 @@ export function AiPanel({
     }
   }
 
+  if (loaded && !caps.ai) {
+    return (
+      <aside className="panel-soft h-fit space-y-3">
+        <div>
+          <h2 className="text-lg text-deep-fir">AI help</h2>
+          <p className="text-sm text-fir-muted">Not available on this demo</p>
+        </div>
+        <p className="text-sm text-fir-muted">{caps.selfHostHint}</p>
+        <p className="text-sm text-fir-muted">
+          Deploy your own instance (see Settings or the README) to use AI with
+          your keys.
+        </p>
+      </aside>
+    );
+  }
+
   return (
     <aside className="panel-soft h-fit space-y-3">
       <div>
@@ -119,7 +138,7 @@ export function AiPanel({
           <button
             key={a.id}
             type="button"
-            disabled={busy !== null}
+            disabled={busy !== null || !caps.ai}
             onClick={() => void run(a.id)}
             className="btn btn-ghost w-full justify-start !rounded-2xl px-3 py-2.5 text-left"
           >
